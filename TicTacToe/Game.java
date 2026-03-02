@@ -16,19 +16,22 @@ public class Game{
 
         boolean gameover = false;
         boolean won = false;
-        String [] table = new String[9];
+        char [] table = new char[9];
 
+        
+        //why do we have a position right now?
         int position = -1;
+
         char player1 = '\0'; 
         char player2 = '\0';
-        String currentplayer = "";
-        Arrays.fill(table, "");
+        char currentplayer = '\0';
+        Arrays.fill(table, '\0');
 
         System.out.println(printGrid(table));
 
         // Chose Symbols for players
         // They cant choose the same or digits
-        while( player1 == '\0' || Character.isDigit(player1)){
+        while(player1 == '\0' || Character.isDigit(player1)){
             System.out.println("Enter a symbol for player 1");
             String input = myScanner.nextLine();
 
@@ -46,11 +49,12 @@ public class Game{
             }
         }
 
-        while(!won){
+        while(!gameover && !won){
 
             //Choose position
-            while(!Grid.contains(String.valueOf(position))){
-                System.out.println("Enter a position on the Grid");
+
+            while(0 > position || 9 < position || !(table[position] == '\0')){
+                System.out.println("Enter a number on the Grid");
                 try {
                     position = myScanner.nextInt();
                     myScanner.nextLine();
@@ -60,15 +64,14 @@ public class Game{
             }
 
             // Update the Grid and player
-            if(currentplayer.equals("") || currentplayer.equals(player2)){
+            if(currentplayer == '\0' || currentplayer == player2){
                 currentplayer = player1;
             }else{
                 currentplayer = player2;
             }
 
-            Grid = Grid.replace(String.valueOf(position), currentplayer);
-            System.out.println(Grid);
             table[position - 1] = currentplayer;
+            System.out.println(printGrid(table));
 
             //Game over section
             //no win situation check.
@@ -95,7 +98,7 @@ public class Game{
         myScanner.close();
     }
 
-    public static String printGrid(String[] board){
+    public static String printGrid(char[] board){
 
         String Grid = "";
 
