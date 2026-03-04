@@ -5,29 +5,25 @@ import java.util.InputMismatchException;
 public class Game{
     public static void main(String[] args) {
         
-        // New Approach:
-        // Generate a table (Array with 9 elements)
-        // Print Grid due using that table instead of the previous Grid.
-        
-
-
-        //Setup
+        // Scannter for input
         Scanner myScanner = new Scanner(System.in);
 
+        // all fields are full no winner 
         boolean gameover = false;
+        // A player has won the game
         boolean won = false;
+        // The playingfield
         char [] table = new char[9];
-
-        
-        //why do we have a position right now?
-        int position = -1;
-
-        char player1 = '\0'; 
-        char player2 = '\0';
-        char currentplayer = '\0';
         Arrays.fill(table, '\0');
 
-        System.out.println(printGrid(table));
+        // position to check which field the player chooses
+        int position = -1;
+
+        // The symbols representing the 2 players
+        char player1 = '\0'; 
+        char player2 = '\0';
+        // current player to do the binary switching (Turns)
+        char currentplayer = '\0';
 
         // Chose Symbols for players
         // They cant choose the same or digits
@@ -49,11 +45,14 @@ public class Game{
             }
         }
 
+        System.out.println(printGrid(table));
+        
+        // Game Loop until either wincondition is met
         while(!gameover && !won){
 
-            //Choose position
-
-            while(0 > position || 9 < position || !(table[position] == '\0')){
+            //input (and check) for position
+            // Why do we not enter here?
+            while(position < 0 || position > 9 || table[position - 1] != '\0'){
                 System.out.println("Enter a number on the Grid");
                 try {
                     position = myScanner.nextInt();
@@ -63,37 +62,40 @@ public class Game{
                 }
             }
 
-            // Update the Grid and player
+            // Update the currentplayer for this turn
             if(currentplayer == '\0' || currentplayer == player2){
                 currentplayer = player1;
             }else{
                 currentplayer = player2;
             }
 
+            // Change the table value of the position
             table[position - 1] = currentplayer;
+            
+            // Out put the Grid after the change
             System.out.println(printGrid(table));
 
             //Game over section
             //no win situation check.
-            won = true;
+
+            // check if there is a field that is empty. Otherwise gameover 
+            gameover = true;
             for(int i = 0; i < table.length; i++){
-                if(table[i].equals("")){
-                    won = false;
+                if(table[i] == '\0'){
+                    gameover = false;
                 }
             }
 
-            if(won && !checkwins(table)){
-                System.out.println("Game over. No player has won");
+            //Game over message
+            if(gameover){
+                System.out.println("Game over. Draw!");
             }
 
-            if(!won){
-                won = checkwins(table);
+            //Win message
+            won = checkwins(table);
+            if(won){
+                System.out.println("Player " + currentplayer + " has won.");
             }
-
-            if(checkwins(table)){
-                System.out.println("Congratulations! Player " + currentplayer + " has won!");
-            }
-
         }
         myScanner.close();
     }
@@ -109,7 +111,12 @@ public class Game{
             Grid += "\n";
 
             for(int j = 0; j < 3; j++){
-                Grid += "|" + (board[(k * 3) + (j + 1) - 1]);
+                //print the board (if there is something)
+                if(board[(k * 3) + (j + 1) - 1] != '\0'){
+                    Grid += "|" + (board[(k * 3) + (j + 1) - 1]);
+                }else{
+                    Grid += "|" + ((k * 3) + (j + 1));
+                }
             }
             Grid += "|\n";
 
@@ -119,11 +126,14 @@ public class Game{
         return Grid;
     }
 
-    public static boolean checkwins(String[] table){
+    // Checks rows then columns and diagonals for the same sign 
+    // Not sure if == works here since I changed it to char from String 
+    public static boolean checkwins(char[] table){
+        
         //rows
         for(int i = 0; i <= 7; i+= 3){
-            if(table[i].equals(table[i+1]) && table[i].equals(table[i+2])){
-                if(!table[i].equals("")){
+            if(table[i] == table[i+1] && table[i] == table[i+2]){
+                if(table[i] != '\0'){
                     return true;
                 }
             }
@@ -131,26 +141,28 @@ public class Game{
 
         //columns
         for(int j = 0; j < 3; j++){
-            if(table[j].equals(table[j+3]) && table[j].equals(table[j+6])){
-                if(!table[j].equals("")){
+            if(table[j] == (table[j+3]) && table[j] == table[j+6]){
+                if(table[j] != '\0'){
                     return true;
                 }
             }
         }
 
-        //diagonal
-        if(table[0].equals(table[4]) && table[0].equals(table[8])){
-            if(!table[0].equals("")){
+        //diagonal left to right
+        if(table[0] == table[4] && table[0] == table[8]){
+            if(table[0] != '\0'){
                 return true;
             }
         }
-        if(table[2].equals(table[4]) && table[2].equals(table[6])){
-            if(!table[2].equals("")){
+        //diagonal right to left
+        if(table[2] == table[4] && table[2] == table[6]){
+            if(table[2] != '\0'){
                 return true;
             }
         }
 
-        //No wins found. Return false to keep playing.
+        
+        //No wins found
         return false;
     }
 }
