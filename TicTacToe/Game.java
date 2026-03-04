@@ -52,7 +52,7 @@ public class Game{
 
             //input (and check) for position
             // Why do we not enter here?
-            while(position < 0 || position > 9 || table[position - 1] != '\0'){
+            while(position < 0 || position >= 9 || table[position - 1] != '\0'){
                 System.out.println("Enter a number on the Grid");
                 try {
                     position = myScanner.nextInt();
