@@ -1,7 +1,7 @@
 import java.util.Scanner;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 
+//String Builder is still missing
 public class Game{
     public static void main(String[] args) {
         
@@ -14,7 +14,7 @@ public class Game{
         boolean won = false;
         // The playingfield
         char [] table = new char[9];
-        Arrays.fill(table, '\0');
+        
 
         // position to check which field the player chooses
         int position = -1;
@@ -36,7 +36,7 @@ public class Game{
             }
         }
 
-        while(player2 == '\0' || Character.isDigit(player2)){
+        while(player2 == '\0' || Character.isDigit(player2) || player1 == player2){
             System.out.println("Enter a symbol for player 2");
             String input = myScanner.nextLine();
 
@@ -47,12 +47,12 @@ public class Game{
 
         System.out.println(printGrid(table));
         
-        // Game Loop until either wincondition is met
-        while(!gameover && !won){
+        // Game Loop 
+        while(true){
 
             //input (and check) for position
-            // Why do we not enter here?
-            while(position < 0 || position >= 9 || table[position - 1] != '\0'){
+            position = - 1;
+            while(position < 1 || position > 9 || table[position - 1] != '\0'){
                 System.out.println("Enter a number on the Grid");
                 try {
                     position = myScanner.nextInt();
@@ -76,8 +76,14 @@ public class Game{
             System.out.println(printGrid(table));
 
             //Game over section
-            //no win situation check.
-
+         
+            //Win message
+            won = checkwins(table);
+            if(won){
+                System.out.println("Player " + currentplayer + " has won.");
+                break;
+            }
+            
             // check if there is a field that is empty. Otherwise gameover 
             gameover = true;
             for(int i = 0; i < table.length; i++){
@@ -89,12 +95,7 @@ public class Game{
             //Game over message
             if(gameover){
                 System.out.println("Game over. Draw!");
-            }
-
-            //Win message
-            won = checkwins(table);
-            if(won){
-                System.out.println("Player " + currentplayer + " has won.");
+                break;
             }
         }
         myScanner.close();
@@ -113,7 +114,7 @@ public class Game{
             for(int j = 0; j < 3; j++){
                 //print the board (if there is something)
                 if(board[(k * 3) + (j + 1) - 1] != '\0'){
-                    Grid += "|" + (board[(k * 3) + (j + 1) - 1]);
+                    Grid += "|" + (board[k * 3 + j]);
                 }else{
                     Grid += "|" + ((k * 3) + (j + 1));
                 }
